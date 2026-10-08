@@ -67,6 +67,26 @@ Shizuku 只在授权那一刻用到，之后**完全不需要它运行** —— 
 
 ## 二、编译
 
+> **不想装 Android Studio？看 `CLOUD-BUILD.md`** —— 用 GitHub Actions 免费云编译，
+> 本地零安装，上传代码后自动出 APK。
+>
+> **新手想用 Android Studio？看 `ANDROID-BUILD.md`**（图文步骤 + 环境体积说明 + 常见问题）。
+> 本节是给有安卓开发经验的人看的速查版。
+>
+> ⚠️ 本项目**没有**随包附带 `gradlew.bat` / `gradle-wrapper.jar`，
+> 所以**不能直接双击 `build.bat` 编译**。
+> 必须先用 Android Studio 打开一次，它会自动生成 Gradle 启动脚本。
+
+### 环境体积（首次约 6~10 GB）
+
+| 项目 | 大小 |
+| --- | --- |
+| Android Studio（含自带 JDK 17） | 约 4 GB |
+| Android SDK Platform 34 + Build Tools | 约 1~2 GB |
+| Gradle 与依赖缓存 | 约 0.5~1 GB |
+
+如果只是为了偶尔传文件，建议直接用**电脑端内置网页方案**，不必装这套环境。
+
 ### 环境
 
 - Android Studio **Giraffe 或更高**（AGP 8.1.4 / Gradle 8.0 / Kotlin 1.9.22）
@@ -75,13 +95,15 @@ Shizuku 只在授权那一刻用到，之后**完全不需要它运行** —— 
   （Shizuku 托管在 `https://maven.rikka.app/`，已配置在 `settings.gradle.kts`）
 - 无第三方网络库，HTTP 用 `HttpURLConnection`；SSE 也自己解析
 
-### 命令行
+### 命令行（仅限已用 Android Studio 打开过）
 
 ```bash
 cd LocalShare-Android
 ./gradlew assembleDebug      # 或 Windows: gradlew.bat assembleDebug
 # 产物：app/build/outputs/apk/debug/app-debug.apk
 ```
+
+未用 Android Studio 打开过时，会提示 `gradlew.bat 不是内部或外部命令`。
 
 ### Android Studio
 

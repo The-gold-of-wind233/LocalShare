@@ -405,13 +405,14 @@ class MainActivity : Activity() {
 
         val url = Prefs.baseUrl(this)
         io.execute {
-            val ok = Api.ping(url, Prefs.codeQuery(this))
+            // 用带原因的版本：失败时把真实错误显示出来，而不是笼统一句话
+            val (ok, reason) = Api.pingWithReason(url, Prefs.codeQuery(this))
             main.post {
                 if (ok) {
                     toast("连接成功")
                     tvEndpoint.text = "电脑：${url.trimEnd('/')}"
                 } else {
-                    toast("连接失败：请检查电脑端是否运行、IP/端口/口令是否正确")
+                    toast("连接失败：$reason")
                 }
                 refreshStatus()
             }

@@ -29,13 +29,37 @@ object Api {
     }
 
     /** 测试电脑是否可达。 */
-    fun ping(baseUrl: String, codeQuery: String): Boolean = try {
-        val conn = open("$baseUrl/api/ping$codeQuery", "GET", 3000)
-        val ok = conn.responseCode == 200
-        conn.disconnect()
-        ok
-    } catch (e: Exception) {
-        false
+    fun ping(baseUrl: String, codeQuery: String): Boolean = pingWithReason(baseUrl, codeQuery).first
+
+    /**
+     * 带失败原因的连通性测试。
+     *
+     * 为什么要这个：原来只返回 true/false，异常被吞掉后界面只能显示
+     * 一句笼统的「请检查…」，实际原因（超时 / 401 / 明文被禁 / 端口错）
+     * 完全看不出来，排查全靠猜。这里把关键信息带出来。
+     */
+    fun pingWithReason(baseUrl: String, codeQuery: String): Pair<Boolean, String> {
+        val url = "$baseUrl/api/ping$codeQuery"
+        return try {
+            val conn = open(url, "GET", 3000)
+            val code = conn.responseCode
+            conn.disconnect()
+            when {
+                code == 200 -> true to "OK"
+                code == 401 -> false to "401 需要访问口令（电脑端设置了口令，请在 App 里填写）"
+                code == 403 -> false to "403 被拒绝"
+                code == 404 -> false to "404 接口不存在（端口可能连到了别的程序）"
+                else -> false to "HTTP $code"
+            }
+        } catch (e: java.net.SocketTimeoutException) {
+            false to "连接超时（电脑端未运行 / 防火墙拦截 / IP 不对）：$url"
+        } catch (e: java.net.ConnectException) {
+            false to "连接被拒绝（端口不对或电脑端未监听）：$url"
+        } catch (e: java.net.UnknownHostException) {
+            false to "无法解析地址：$url"
+        } catch (e: Exception) {
+            false to "${e.javaClass.simpleName}: ${e.message}"
+        }
     }
 
     /** 推送文本到电脑剪贴板。 */

@@ -1,47 +1,83 @@
 @echo off
 setlocal
-title LocalShare Android ç¼–è¯‘
+title LocalShare Android ±àÒë
 
 cd /d "%~dp0"
 
 echo ============================================
-echo   LocalShare Android ç¼–è¯‘
+echo   LocalShare Android ±àÒë
 echo ============================================
 echo.
 
-if exist "%JAVA_HOME%\bin\java.exe" (
-    echo [OK] JAVA_HOME = %JAVA_HOME%
-) else (
-    echo [!] æœªè®¾ç½® JAVA_HOMEï¼Œå°è¯•ç”¨ç³»ç»Ÿé»˜è®¤ java...
-)
+rem ---------- ¼ì²é gradlew ÊÇ·ñ´æÔÚ ----------
+rem  ±¾ÏîÄ¿Ã»ÓĞËæ°ü¸½´ø gradle-wrapper.jar£¨¶ş½øÖÆÎÄ¼ş£©£¬
+rem  Òò´ËÎŞ·¨Ö±½ÓÃüÁîĞĞ±àÒë¡£±ØĞëÏÈÓÉ Android Studio ´ò¿ªÒ»´Î£¬
+rem  Ëü»á×Ô¶¯Éú³É gradlew / gradlew.bat / wrapper jar¡£
+if not exist "gradlew.bat" goto :nogradlew
+
+rem ---------- ¼ì²é Java ----------
+if exist "%JAVA_HOME%\bin\java.exe" goto :javaok
+echo [!] Î´ÉèÖÃ JAVA_HOME£¬³¢ÊÔÓÃÏµÍ³Ä¬ÈÏ java...
+
+:javaok
 java -version 2>&1
-if errorlevel 1 (
-    echo.
-    echo [é”™è¯¯] æ²¡æœ‰å¯ç”¨çš„ Javaã€‚è¯·å®‰è£… JDK 17 å¹¶è®¾ç½® JAVA_HOMEã€‚
-    pause
-    exit /b 1
-)
+if errorlevel 1 goto :nojava
 
 echo.
-echo æ­£åœ¨ç¼–è¯‘ Debug APKï¼ˆé¦–æ¬¡éœ€è¦è”ç½‘ä¸‹è½½ Gradleï¼Œå¯èƒ½è¾ƒæ…¢ï¼‰...
+echo ÕıÔÚ±àÒë Debug APK...
 echo.
-
 call gradlew.bat assembleDebug
+if errorlevel 1 goto :buildfail
 
-if errorlevel 1 (
-    echo.
-    echo [é”™è¯¯] ç¼–è¯‘å¤±è´¥ï¼Œè¯·æ£€æŸ¥ä¸Šé¢çš„æŠ¥é”™ã€‚
-    echo       å¸¸è§åŸå› ï¼šæœªå®‰è£… Android SDK / æœªåŒæ„ licenses / ç½‘ç»œä¸é€šã€‚
-    pause
-    exit /b 1
-)
+goto :done
 
+:nogradlew
+echo [ÌáÊ¾] ±¾ÏîÄ¿ÉĞÎ´Éú³É Gradle Æô¶¯½Å±¾¡£
+echo.
+echo   ÇëÓÃ Android Studio ´ò¿ª±¾ÎÄ¼ş¼Ğ±àÒë£º
+echo     1. ´ò¿ª Android Studio
+echo     2. File - Open - Ñ¡±¾ÎÄ¼ş¼Ğ£¨º¬ settings.gradle.kts µÄÕâ²ã£©
+echo     3. µÈ´ıÓÒÏÂ½Ç Gradle Sync Íê³É
+echo     4. Build - Build Bundle(s)/APK(s) - Build APK(s)
+echo     5. Íê³ÉºóµãÓÒÏÂ½Ç locate Á´½ÓÕÒµ½ apk
+echo.
+echo   ²»Ïë×° Android Studio£¿¼û CLOUD-BUILD.md£¨GitHub Ãâ·ÑÔÆ±àÒë£©
+echo.
+echo   Android Studio Ê×´Î´ò¿ªÊ±»á×Ô¶¯Éú³É gradlew.bat£¬
+echo   Ö®ºóÔÙË«»÷±¾½Å±¾¾ÍÄÜÃüÁîĞĞ±àÒëÁË¡£
+echo.
+echo   ÏêÏ¸Í¼ÎÄ²½Öè¼û ANDROID-BUILD.md
+echo.
+pause
+exit /b 1
+
+:nojava
+echo.
+echo [´íÎó] Ã»ÓĞ¿ÉÓÃµÄ Java¡£
+echo        Android Studio ×Ô´ø JDK£¬ÓÃËü´ò¿ªÏîÄ¿¼´¿É£¬²»ÓÃµ¥¶À×°¡£
+echo.
+pause
+exit /b 1
+
+:buildfail
+echo.
+echo [´íÎó] ±àÒëÊ§°Ü¡£³£¼ûÔ­Òò£º
+echo     1. Î´°²×° Android SDK£¨Android Studio Àï SDK Manager ×°£©
+echo     2. Î´Í¬Òâ SDK licenses
+echo     3. ÍøÂç²»Í¨£¬ÒÀÀµÏÂ²»ÏÂÀ´
+echo.
+echo   Ïê¼û ANDROID-BUILD.md
+echo.
+pause
+exit /b 1
+
+:done
 echo.
 echo ============================================
-echo   ç¼–è¯‘å®Œæˆï¼š
+echo   ±àÒëÍê³É£º
 echo   app\build\outputs\apk\debug\app-debug.apk
 echo.
-echo   æŠŠè¿™ä¸ª apk ä¼ åˆ°æ‰‹æœºå®‰è£…å³å¯ã€‚
+echo   °ÑÕâ¸ö apk ´«µ½ÊÖ»ú°²×°¼´¿É¡£
 echo ============================================
 echo.
 pause
