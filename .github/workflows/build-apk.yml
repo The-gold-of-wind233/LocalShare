@@ -1,6 +1,5 @@
 name: Build APK
 
-# 触发方式：推送代码时自动编译，也可以在 GitHub 网页上手动点按钮编译
 on:
   push:
     branches: [ "main", "master" ]
@@ -20,18 +19,42 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: 3. 准备 Android SDK
-        uses: android-actions/setup-android@v3
+      # 不使用 android-actions/setup-android：它会执行 "sdkmanager tools"，
+      # 而 cmdline-tools 16 已移除 tools 包，必然失败。
+      # GitHub 运行器自带 Android SDK，这里只补装本项目需要的组件。
+      - name: 3. 接受 SDK licenses
+        run: |
+          set -e
+          export ANDROID_HOME="${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}"
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          SM=$(ls -d "$ANDROID_HOME"/cmdline-tools/*/bin/sdkmanager 2>/dev/null | head -1)
+          echo "sdkmanager=$SM"
+          yes | "$SM" --licenses > /dev/null 2>&1 || true
+          echo "licenses ok"
 
-      - name: 4. 准备 Gradle 8.0
-        uses: gradle/actions/setup-gradle@v3
-        with:
-          gradle-version: '8.0'
+      - name: 4. 安装 Android 平台与构建工具
+        run: |
+          set -e
+          export ANDROID_HOME="${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}"
+          SM=$(ls -d "$ANDROID_HOME"/cmdline-tools/*/bin/sdkmanager | head -1)
+          "$SM" --install "platforms;android-34" "build-tools;34.0.0" "platform-tools"
+          echo "sdk.dir=$ANDROID_HOME" > local.properties
 
-      - name: 5. 编译 Debug APK
-        run: gradle assembleDebug --no-daemon
+      - name: 5. 下载 Gradle 8.0
+        run: |
+          set -e
+          cd /tmp
+          curl -sSL -o gradle.zip https://services.gradle.org/distributions/gradle-8.0-bin.zip
+          unzip -q -o gradle.zip -d /opt
+          /opt/gradle-8.0/bin/gradle --version | head -3
 
-      - name: 6. 上传 APK（供下载）
+      - name: 6. 编译 Debug APK
+        run: |
+          set -e
+          export ANDROID_HOME="${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}"
+          /opt/gradle-8.0/bin/gradle assembleDebug --no-daemon
+
+      - name: 7. 上传 APK（供下载）
         uses: actions/upload-artifact@v4
         with:
           name: LocalShare-Android-APK
