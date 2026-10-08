@@ -19,6 +19,16 @@ import java.io.OutputStream
  */
 object Api {
 
+    /**
+     * 拼接 baseUrl 与路径，保证中间恰好一个 '/'。
+     *
+     * 为什么需要：baseUrl 形如 "http://192.168.0.109:8080/"（末尾带斜杠），
+     * 若直接写 "$baseUrl/api/ping" 就会拼出 "http://...:8080//api/ping"（双斜杠），
+     * 服务端会把 "//api/ping" 解析成 host=api、path=/ping，导致 404。
+     */
+    private fun join(baseUrl: String, path: String): String =
+        baseUrl.trimEnd('/') + "/" + path.trimStart('/')
+
     private fun open(url: String, method: String, timeoutMs: Int = 5000): HttpURLConnection {
         val conn = URL(url).openConnection() as HttpURLConnection
         conn.requestMethod = method
@@ -39,7 +49,7 @@ object Api {
      * 完全看不出来，排查全靠猜。这里把关键信息带出来。
      */
     fun pingWithReason(baseUrl: String, codeQuery: String): Pair<Boolean, String> {
-        val url = "$baseUrl/api/ping$codeQuery"
+        val url = join(baseUrl, "api/ping$codeQuery")
         return try {
             val conn = open(url, "GET", 3000)
             val code = conn.responseCode
@@ -64,7 +74,7 @@ object Api {
 
     /** 推送文本到电脑剪贴板。 */
     fun push(baseUrl: String, codeQuery: String, text: String): Boolean = try {
-        val conn = open("$baseUrl/api/clipboard$codeQuery", "POST")
+        val conn = open(join(baseUrl, "api/clipboard$codeQuery"), "POST")
         conn.doOutput = true
         conn.setRequestProperty("Content-Type", "application/json; charset=utf-8")
 
@@ -95,7 +105,7 @@ object Api {
         file: java.io.File,
         onProgress: ((Long) -> Unit)? = null
     ): Boolean = try {
-        val conn = open("$baseUrl/api/upload$codeQuery", "POST", 30_000)
+        val conn = open(join(baseUrl, "api/upload$codeQuery"), "POST", 30_000)
         conn.doOutput = true
         conn.setRequestProperty("Content-Type", mime.ifBlank { "application/octet-stream" })
         conn.setRequestProperty(
@@ -135,7 +145,7 @@ object Api {
 
     /** 已接收文件列表（电脑端保存的文件）。 */
     fun received(baseUrl: String, codeQuery: String): List<ReceivedFile> {
-        val conn = open("$baseUrl/api/received$codeQuery", "GET", 5000)
+        val conn = open(join(baseUrl, "api/received$codeQuery"), "GET", 5000)
         return try {
             if (conn.responseCode != 200) return emptyList()
             val text = conn.inputStream.bufferedReader().readText()
@@ -181,7 +191,7 @@ object Api {
     ) {
         var conn: HttpURLConnection? = null
         try {
-            conn = open("$baseUrl/api/clip/stream$codeQuery", "GET")
+            conn = open(join(baseUrl, "api/clip/stream$codeQuery"), "GET")
             conn.readTimeout = 0          // 0 = 不超时，长连接必需
             conn.setRequestProperty("Accept", "text/event-stream")
             conn.setRequestProperty("Cache-Control", "no-cache")
