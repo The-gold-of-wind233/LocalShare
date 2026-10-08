@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F7FA"
+    android:paddingBottom="24dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- 状态卡 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/tvState"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="未连接"
+                android:textColor="#1B1F27"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvEndpoint"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="尚未发现电脑"
+                android:textColor="#8A93A6"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/tvLastSync"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text=""
+                android:textColor="#8A93A6"
+                android:textSize="12sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnSyncToggle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="开始同步" />
+
+                <Button
+                    android:id="@+id/btnDiscover"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:text="查找电脑" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- 电脑列表 -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:layout_marginBottom="6dp"
+            android:text="发现的电脑"
+            android:textColor="#6B7488"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:id="@+id/pcList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <TextView
+                android:id="@+id/tvPcEmpty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="点「查找电脑」自动扫描局域网"
+                android:textColor="#8A93A6"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <!-- 无感同步的三个前提 -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:layout_marginBottom="6dp"
+            android:text="手机 → 电脑 的同步方式"
+            android:textColor="#6B7488"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+                        <!-- 推荐方案：Shizuku 授权 AppOps，一次授权永久有效、不会被杀后台 -->
+            <LinearLayout
+                android:id="@+id/rowShizuku"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="① Shizuku 授权（推荐）"
+                        android:textColor="#1B1F27"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/tvShizukuState"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="未授权"
+                        android:textColor="#EF4444"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btnShizuku"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="去授权" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#EDEFF3" />
+
+<LinearLayout
+                android:id="@+id/rowAccessibility"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="② 无障碍服务（备选）"
+                        android:textColor="#1B1F27"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/tvAccessibilityState"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="未开启"
+                        android:textColor="#EF4444"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btnAccessibility"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="去开启" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#EDEFF3" />
+
+            <LinearLayout
+                android:id="@+id/rowBattery"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="③ 关闭电池优化（必需）"
+                        android:textColor="#1B1F27"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/tvBatteryState"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="未加入白名单"
+                        android:textColor="#EF4444"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btnBattery"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="去设置" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#EDEFF3" />
+
+            <LinearLayout
+                android:id="@+id/rowNotify"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="④ 通知权限（前台服务需要）"
+                        android:textColor="#1B1F27"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/tvNotifyState"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text=""
+                        android:textColor="#EF4444"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btnNotify"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="去授权" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- 手动配置 -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:layout_marginBottom="6dp"
+            android:text="手动配置（自动查找失败时使用）"
+            android:textColor="#6B7488"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <EditText
+                android:id="@+id/etIp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="电脑 IP，如 192.168.1.9"
+                android:inputType="text"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/etPort"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:hint="端口，如 8080"
+                android:inputType="number"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/etCode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:hint="访问口令（电脑没设置就留空）"
+                android:inputType="text"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/btnTest"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="测试连接" />
+        </LinearLayout>
+
+        <!-- 测试区 -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:layout_marginBottom="6dp"
+            android:text="同步测试"
+            android:textColor="#6B7488"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <EditText
+                android:id="@+id/etSend"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="输入文本推送到电脑（测试用；平时复制即自动同步）"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/btnPush"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="推送到电脑" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="电脑端复制文本后，这里应立刻显示"
+                android:textColor="#8A93A6"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/tvReceived"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:background="#F5F7FA"
+                android:padding="10dp"
+                android:text="（等待接收）"
+                android:textColor="#1B1F27"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <!-- 上传文件到电脑 -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:layout_marginBottom="6dp"
+            android:text="上传文件到电脑"
+            android:textColor="#6B7488"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <Button
+                android:id="@+id/btnPickFile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="选择文件上传" />
+
+            <TextView
+                android:id="@+id/tvUpProgress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text=""
+                android:textColor="#4C8DFF"
+                android:textSize="12sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="电脑上已收到的文件"
+                android:textColor="#8A93A6"
+                android:textSize="12sp" />
+
+            <LinearLayout
+                android:id="@+id/recvList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="提示：电脑上复制 → 手机剪贴板自动更新；手机上复制 → 电脑自动可粘贴。两边都不需要手动操作。\n\n推荐 Shizuku 方案：一次授权写入系统配置，永久有效，不依赖常驻组件，不会被系统杀后台。无障碍服务是 Shizuku 不可用时的备选。"
+            android:textColor="#8A93A6"
+            android:textSize="12sp" />
+    </LinearLayout>
+</ScrollView>

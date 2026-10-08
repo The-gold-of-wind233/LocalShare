@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  无障碍服务配置。
+  说明：本服务**不读取任何屏幕文字内容**，只监听「界面发生变化」这一信号，
+  然后去读系统剪贴板。这是 Android 10+ 上应用不在前台时读取剪贴板的
+  唯一可行途径（前台服务本身不具备该权限）。
+-->
+<accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
+    android:description="@string/accessibility_desc"
+    android:accessibilityEventTypes="typeWindowContentChanged|typeWindowStateChanged|typeViewTextChanged|typeViewFocusChanged"
+    android:accessibilityFeedbackType="feedbackGeneric"
+    android:notificationTimeout="200"
+    android:canRetrieveWindowContent="false"
+    android:canRequestFilterKeyEvents="false"
+    android:settingsActivity="com.localshare.app.MainActivity" />

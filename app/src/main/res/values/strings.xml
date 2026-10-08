@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LocalShare</string>
+    <string name="accessibility_label">LocalShare 剪贴板同步</string>
+    <string name="accessibility_desc">用于在你复制文本时自动同步到电脑。本服务只读取系统剪贴板，不读取、不上传任何屏幕内容。</string>
+</resources>
