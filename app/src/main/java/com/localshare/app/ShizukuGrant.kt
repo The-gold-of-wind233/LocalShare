@@ -34,6 +34,12 @@ object ShizukuGrant {
 
     /** AppOps 操作名。注意是 READ_CLIPBOARD，写成 CLIPBOARD_READ 会报 Unknown operation string */
     private const val OP_READ_CLIPBOARD = "READ_CLIPBOARD"
+    /**
+     * AppOps 检查用的 op 字符串。
+     * 不能用 AppOpsManager.OPSTR_READ_CLIPBOARD —— 该常量在公开 SDK 里不可见（@hide），
+     * 编译会报 Unresolved reference，因此这里直接写死其值。
+     */
+    private const val OPSTR_READ_CLIPBOARD = "android:read_clipboard"
 
     private const val REQ_CODE = 9001
 
@@ -47,7 +53,7 @@ object ShizukuGrant {
         val appOps = ctx.getSystemService(Context.APP_OPS_SERVICE) as? AppOpsManager ?: return false
         return try {
             appOps.unsafeCheckOpNoThrow(
-                AppOpsManager.OPSTR_READ_CLIPBOARD,
+                OPSTR_READ_CLIPBOARD,
                 Process.myUid(),
                 ctx.packageName
             ) == AppOpsManager.MODE_ALLOWED
@@ -176,7 +182,7 @@ object ShizukuGrant {
                     onDone(false, "调用特权服务失败：${e.message}")
                 } finally {
                     try {
-                        Shizuku.unbindUserService(args, this)
+                        Shizuku.unbindUserService(args, this, true)
                     } catch (e: Exception) {
                         // 解绑失败不影响结果
                     }
@@ -224,7 +230,7 @@ object ShizukuGrant {
                     onDone(false, "撤销失败：${e.message}")
                 } finally {
                     try {
-                        Shizuku.unbindUserService(args, this)
+                        Shizuku.unbindUserService(args, this, true)
                     } catch (e: Exception) { /* 忽略 */ }
                 }
             }

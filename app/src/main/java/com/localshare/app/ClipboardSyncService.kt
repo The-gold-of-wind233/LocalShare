@@ -201,12 +201,19 @@ class ClipboardSyncService : Service() {
         }
     }
 
-    private fun readClipboardOnMain(): String? = try {
-        val clip = clipboard?.primaryClip ?: return null
-        if (clip.itemCount <= 0) return null
-        clip.getItemAt(0)?.coerceToText(this)?.toString()
-    } catch (e: Exception) {
-        null
+    // 注意：这里必须用块体（{ ... }）。表达式体（= try { ... }）里不允许写 return，
+    // 而本函数需要提前返回 null。
+    private fun readClipboardOnMain(): String? {
+        return try {
+            val clip = clipboard?.primaryClip
+            if (clip == null || clip.itemCount <= 0) {
+                null
+            } else {
+                clip.getItemAt(0)?.coerceToText(this)?.toString()
+            }
+        } catch (e: Exception) {
+            null
+        }
     }
 
     private fun statusText(): String {
