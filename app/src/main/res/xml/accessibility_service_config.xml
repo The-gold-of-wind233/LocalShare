@@ -7,7 +7,7 @@
 -->
 <accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
     android:description="@string/accessibility_desc"
-    android:accessibilityEventTypes="typeWindowContentChanged|typeWindowStateChanged|typeViewTextChanged|typeViewFocusChanged"
+    android:accessibilityEventTypes="typeWindowContentChanged|typeWindowStateChanged|typeViewTextChanged|typeViewFocused"
     android:accessibilityFeedbackType="feedbackGeneric"
     android:notificationTimeout="200"
     android:canRetrieveWindowContent="false"
